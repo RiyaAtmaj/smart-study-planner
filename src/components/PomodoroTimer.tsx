@@ -78,6 +78,14 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete }) => {
 
   return (
     <div className="card" style={{ textAlign: 'center', maxWidth: '300px', margin: '0 auto' }}>
+      <div style={{ 
+        fontSize: '3.5rem', 
+        marginBottom: '0.5rem',
+        animation: isRunning ? 'bunnyBounce 0.6s ease-in-out infinite' : 'bunnyWiggle 0.4s ease-in-out infinite'
+      }}>
+        🐰
+      </div>
+      
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
         <Timer size={24} style={{ marginRight: '0.5rem' }} />
         <h3>Pomodoro Timer</h3>

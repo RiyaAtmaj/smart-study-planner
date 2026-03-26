@@ -1,34 +1,50 @@
-/* Navbar */
+/* ==================== Navbar ==================== */
 .navbar {
-  background: var(--primary-blue);
+  background: var(--gradient-primary);
   color: white;
-  padding: 1rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar h1 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .reset-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  padding: 0.65rem 1.2rem;
+  border-radius: 0.625rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .reset-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
 }
 
-/* Page containers */
+.reset-btn:active {
+  opacity: 0.9;
+}
+
+/* ==================== Page containers ==================== */
 .page-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -37,37 +53,41 @@
 
 .page-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .page-header h2 {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
 }
 
 .page-header p {
   color: var(--text-secondary);
   font-size: 1.1rem;
+  line-height: 1.6;
 }
 
-/* Form styles */
+/* ==================== Form styles ==================== */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: 0.625rem;
+  font-weight: 600;
   color: var(--text-primary);
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -76,27 +96,53 @@
   }
 }
 
-/* Subject cards */
+/* ==================== Subject cards ==================== */
 .subject-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .subject-card {
   background: white;
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
   border: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.subject-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0066ff, #0052cc);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.subject-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--primary-blue);
+}
+
+.subject-card:hover::before {
+  transform: scaleX(1);
 }
 
 .subject-card.selected {
   border-color: var(--primary-blue);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1), var(--shadow-lg);
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.02) 0%, rgba(0, 102, 255, 0.05) 100%);
 }
 
 .subject-header {
@@ -107,21 +153,29 @@
 }
 
 .subject-color {
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.subject-card:hover .subject-color {
+  transform: scale(1.2);
 }
 
 .subject-title {
-  font-weight: 600;
+  font-weight: 700;
   flex: 1;
   margin-left: 0.75rem;
+  font-size: 1.05rem;
+  color: var(--text-primary);
 }
 
 .difficulty-slider {
   width: 100%;
-  margin: 1rem 0;
+  margin: 1.25rem 0;
 }
 
 .topic-list {
@@ -131,71 +185,152 @@
 .topic-item {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.topic-item:hover {
+  padding-left: 0.5rem;
+  color: var(--primary-blue);
 }
 
 .topic-item:last-child {
   border-bottom: none;
 }
 
-/* Dashboard */
+/* ==================== Dashboard ==================== */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .stat-card {
   background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: 0.875rem;
+  padding: 1.75rem;
   text-align: center;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--primary-blue);
+  opacity: 0.05;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-color);
 }
 
 .stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-blue);
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 0.5rem;
+  letter-spacing: -1px;
 }
 
 .stat-label {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 .next-task-card {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 0.875rem;
+  padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.next-task-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
 }
 
 .next-task-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .today-schedule {
   background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: 0.875rem;
+  padding: 2rem;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.today-schedule:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .schedule-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 1rem;
+}
+
+/* ==================== Media Queries ==================== */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .page-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .navbar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .navbar h1 {
+    font-size: 1.25rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subject-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .session-list {
@@ -393,5 +528,36 @@
 
   .day-sessions:first-child {
     page-break-before: avoid;
+  }
+}
+
+/* ==================== Bunny Animations ==================== */
+@keyframes bunnyBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-12px) scale(1.05);
+  }
+  50% {
+    transform: translateY(0) scale(1);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@keyframes bunnyWiggle {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-2deg) scale(1.02);
+  }
+  50% {
+    transform: rotate(2deg) scale(1);
+  }
+  75% {
+    transform: rotate(-1deg) scale(1.01);
   }
 }
