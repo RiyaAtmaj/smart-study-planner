@@ -24,6 +24,8 @@ export const loadFromStorage = (): AppState | null => {
           scheduledDate: new Date(session.scheduledDate),
         }));
       }
+      // Set defaults for new fields
+      if (!parsed.theme) parsed.theme = 'light';
       return parsed;
     }
   } catch (error) {

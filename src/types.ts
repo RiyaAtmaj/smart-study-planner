@@ -1,7 +1,7 @@
 export interface User {
   name: string;
   email: string;
-  college: string;
+  college?: string;
 }
 
 export interface Topic {
@@ -45,7 +45,9 @@ export interface StudyPlan {
 
 export interface AppState {
   user: User | null;
+  token?: string;
   subjects: Subject[];
   currentPlan: StudyPlan | null;
-  currentStep: 'welcome' | 'subjects' | 'config' | 'dashboard';
+  currentStep: 'auth' | 'welcome' | 'home' | 'subjects' | 'config' | 'dashboard';
+  theme: 'light' | 'dark';
 }

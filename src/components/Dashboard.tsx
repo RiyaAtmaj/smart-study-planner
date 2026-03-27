@@ -1,10 +1,11 @@
-import React from 'react';
-import { AppState, Session } from '../types';
+import React, { useState } from 'react';
+import { AppState, Session, StudyPlan } from '../types';
 import { Link } from 'react-router-dom';
 import { format, isToday } from 'date-fns';
 import { addAdaptiveSessions } from '../ai';
 import PomodoroTimer from './PomodoroTimer';
 import ProgressChart from './ProgressChart';
+import PlanHistory from './PlanHistory';
 import {
   BookOpen,
   AlertTriangle,
@@ -18,11 +19,17 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ state, onUpdateState }) => {
+  const [showHistory, setShowHistory] = useState(false);
+
   if (!state.currentPlan || !state.user) return null;
 
   const { currentPlan, subjects } = state;
   const today = new Date();
   const currentHour = today.getHours();
+
+  const restorePlan = (plan: StudyPlan) => {
+    onUpdateState({ currentPlan: plan });
+  };
 
   // Calculate greeting
   const getGreeting = () => {
@@ -110,6 +117,28 @@ const Dashboard: React.FC<DashboardProps> = ({ state, onUpdateState }) => {
         <p style={{ color: 'var(--text-secondary)' }}>
           {format(today, 'EEEE, MMMM d, yyyy')}
         </p>
+
+        <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowHistory(!showHistory)}
+          >
+            {showHistory ? 'Hide' : 'Show'} Plan History
+          </button>
+
+          <Link to="/plan" className="btn btn-primary">
+            View Full Plan
+          </Link>
+
+          <button
+            className="btn btn-danger"
+            onClick={() => onUpdateState({ currentPlan: null, user: null, subjects: [] })}
+          >
+            Reset All Data
+          </button>
+        </div>
+
+        {showHistory && <PlanHistory onSelectPlan={restorePlan} />}
       </div>
 
       {/* Stats Cards */}

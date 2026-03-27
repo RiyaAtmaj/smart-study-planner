@@ -26,6 +26,13 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ plan, subjects }) => {
     })
     .sort((a, b) => b.progress - a.progress);
 
+  // Additional stats
+  const completedSessions = plan.sessions.filter(s => s.status === 'completed');
+  const totalStudyTime = completedSessions.reduce((sum, s) => sum + s.duration, 0);
+  const averageSessionTime = completedSessions.length > 0 ? Math.round(totalStudyTime / completedSessions.length) : 0;
+  const totalSessions = plan.sessions.length;
+  const completionRate = totalSessions > 0 ? Math.round((completedSessions.length / totalSessions) * 100) : 0;
+
   return (
     <div className="card">
       <h3 style={{ marginBottom: '1rem' }}>Progress by Subject</h3>
@@ -69,6 +76,22 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ plan, subjects }) => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Additional Stats */}
+      <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary-blue)' }}>{totalStudyTime} min</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Total Study Time</div>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-green)' }}>{averageSessionTime} min</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Avg Session</div>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-purple)' }}>{completionRate}%</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Completion Rate</div>
+        </div>
       </div>
     </div>
   );

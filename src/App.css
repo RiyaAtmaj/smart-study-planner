@@ -105,7 +105,7 @@
 }
 
 .subject-card {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 0.875rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
@@ -208,7 +208,7 @@
 }
 
 .stat-card {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 0.875rem;
   padding: 1.75rem;
   text-align: center;
@@ -279,7 +279,7 @@
 }
 
 .today-schedule {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 0.875rem;
   padding: 2rem;
   box-shadow: var(--shadow);
@@ -341,7 +341,7 @@
 
 /* Session cards */
 .session-card {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
@@ -409,7 +409,7 @@
 
 /* Study plan */
 .plan-sidebar {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
@@ -462,7 +462,7 @@
 }
 
 .plan-content {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: var(--shadow);
@@ -536,14 +536,17 @@
   0%, 100% {
     transform: translateY(0) scale(1);
   }
-  25% {
-    transform: translateY(-12px) scale(1.05);
+  20% {
+    transform: translateY(-15px) scale(1.08);
   }
-  50% {
-    transform: translateY(0) scale(1);
+  40% {
+    transform: translateY(-5px) scale(1.02);
   }
-  75% {
-    transform: translateY(-8px) scale(1.02);
+  60% {
+    transform: translateY(-10px) scale(1.05);
+  }
+  80% {
+    transform: translateY(-2px) scale(1.01);
   }
 }
 
@@ -552,12 +555,12 @@
     transform: rotate(0deg) scale(1);
   }
   25% {
-    transform: rotate(-2deg) scale(1.02);
+    transform: rotate(-3deg) scale(1.03);
   }
   50% {
-    transform: rotate(2deg) scale(1);
+    transform: rotate(3deg) scale(1);
   }
   75% {
-    transform: rotate(-1deg) scale(1.01);
+    transform: rotate(-1.5deg) scale(1.02);
   }
 }

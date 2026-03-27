@@ -104,6 +104,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete }) => {
           className={`btn ${isRunning ? 'btn-secondary' : 'btn-primary'}`}
           onClick={toggleTimer}
           style={{ flex: 1 }}
+          aria-label={isRunning ? 'Pause timer' : 'Start timer'}
         >
           {isRunning ? <Pause size={16} /> : <Play size={16} />}
           {isRunning ? 'Pause' : 'Start'}
@@ -113,6 +114,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete }) => {
           className="btn btn-secondary"
           onClick={resetTimer}
           style={{ flex: 1 }}
+          aria-label="Reset timer"
         >
           <RotateCcw size={16} />
           Reset
