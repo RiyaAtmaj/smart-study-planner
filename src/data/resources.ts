@@ -14,30 +14,6 @@ export interface Resource {
 export const CBSE_RESOURCES: Resource[] = [
   // Mathematics - Class 10
   {
-    id: 'math-10-real-numbers',
-    title: 'Real Numbers - Complete Chapter',
-    description: 'Learn about Euclid\'s Division Algorithm, Fundamental Theorem of Arithmetic, and rational/irrational numbers.',
-    subject: 'Mathematics',
-    chapter: 'Real Numbers',
-    class: 10,
-    type: 'website',
-    url: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:real-numbers',
-    source: 'Khan Academy',
-    tags: ['real numbers', 'euclid', 'irrational', 'rational']
-  },
-  {
-    id: 'math-10-polynomials',
-    title: 'Polynomials - Geometrical Meaning',
-    description: 'Understanding polynomials, their degrees, and graphical representations.',
-    subject: 'Mathematics',
-    chapter: 'Polynomials',
-    class: 10,
-    type: 'website',
-    url: 'https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:polynomials',
-    source: 'BYJU\'S',
-    tags: ['polynomials', 'graphs', 'degree', 'zeros']
-  },
-  {
     id: 'math-10-quadratic-equations',
     title: 'Quadratic Equations - Factorization Method',
     description: 'Solving quadratic equations using factorization, completing square, and quadratic formula.',
@@ -115,18 +91,6 @@ export const CBSE_RESOURCES: Resource[] = [
   },
 
   // Social Science - Class 10
-  {
-    id: 'social-10-democracy',
-    title: 'Democracy and Diversity',
-    description: 'Understanding democracy, its challenges, and promoting diversity.',
-    subject: 'Social Science',
-    chapter: 'Democracy and Diversity',
-    class: 10,
-    type: 'website',
-    url: 'https://ncert.nic.in/textbook.php?le=socialscientific&chap=democracy-and-diversity',
-    source: 'Khan Academy',
-    tags: ['democracy', 'diversity', 'politics', 'social']
-  },
   {
     id: 'social-10-gender-religion',
     title: 'Gender, Religion and Caste',
@@ -382,9 +346,6 @@ export const CBSE_RESOURCES: Resource[] = [
     tags: ['scratch', 'programming', 'visual', 'beginners']
   },
 
-  // Add more resources for classes 1-9 and more chapters...
-  // For brevity, I'll add a few more examples
-
   // Mathematics - Class 9
   {
     id: 'math-9-number-systems',
@@ -395,34 +356,6 @@ export const CBSE_RESOURCES: Resource[] = [
     class: 9,
     type: 'website',
     url: 'https://www.khanacademy.org/math/pre-algebra/number-sense',
-    source: 'Khan Academy',
-    tags: ['number systems', 'irrational', 'rational', 'real numbers']
-  },
-
-  // Science - Class 9
-  {
-    id: 'science-9-matter',
-    title: 'Matter in Our Surroundings',
-    description: 'States of matter, properties, and changes of state.',
-    subject: 'Science',
-    chapter: 'Matter in Our Surroundings',
-    class: 9,
-    type: 'website',
-    url: 'https://www.khanacademy.org/science/chemistry/states-of-matter',
-    source: 'BYJU\'S',
-    tags: ['matter', 'states', 'properties', 'changes']
-  },
-
-  // Mathematics - Class 9
-  {
-    id: 'math-9-number-systems',
-    title: 'Number Systems - Irrational Numbers',
-    description: 'Understanding rational and irrational numbers with examples.',
-    subject: 'Mathematics',
-    chapter: 'Number Systems',
-    class: 9,
-    type: 'website',
-    url: 'https://www.khanacademy.org',
     source: 'Khan Academy',
     tags: ['number systems', 'irrational', 'rational', 'real numbers']
   },
@@ -460,7 +393,7 @@ export const CBSE_RESOURCES: Resource[] = [
     chapter: 'Matter in Our Surroundings',
     class: 9,
     type: 'website',
-    url: 'https://www.khanacademy.org',
+    url: 'https://www.khanacademy.org/science/chemistry/states-of-matter',
     source: 'BYJU\'S',
     tags: ['matter', 'states', 'properties', 'changes']
   },
@@ -539,6 +472,326 @@ export const CBSE_RESOURCES: Resource[] = [
     url: 'https://ncert.nic.in/textbook.php?le=socialscientific&chap=democracy-in-india',
     source: 'NCERT',
     tags: ['democracy', 'india', 'institutions', 'processes']
+  },
+
+  // Mathematics - Class 8
+  {
+    id: 'math-8-algebra',
+    title: 'Introduction to Algebra',
+    description: 'Basic concepts of algebra, variables, and equations.',
+    subject: 'Mathematics',
+    chapter: 'Algebra',
+    class: 8,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/algebra-basics',
+    source: 'Khan Academy',
+    tags: ['algebra', 'variables', 'equations', 'basics']
+  },
+  {
+    id: 'math-8-geometry',
+    title: 'Understanding Shapes',
+    description: 'Properties of 2D and 3D shapes, area, and perimeter.',
+    subject: 'Mathematics',
+    chapter: 'Geometry',
+    class: 8,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/geometry',
+    source: 'BYJU\'S',
+    tags: ['geometry', 'shapes', 'area', 'perimeter']
+  },
+
+  // Science - Class 8
+  {
+    id: 'science-8-force-pressure',
+    title: 'Force and Pressure',
+    description: 'Understanding force, pressure, and their applications.',
+    subject: 'Science',
+    chapter: 'Force and Pressure',
+    class: 8,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/physics/forces-newtons-laws',
+    source: 'Khan Academy',
+    tags: ['force', 'pressure', 'physics', 'applications']
+  },
+  {
+    id: 'science-8-light',
+    title: 'Light and Vision',
+    description: 'Properties of light, reflection, and human eye.',
+    subject: 'Science',
+    chapter: 'Light',
+    class: 8,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/physics/light-waves',
+    source: 'Vedantu',
+    tags: ['light', 'reflection', 'vision', 'eye']
+  },
+
+  // English - Class 8
+  {
+    id: 'english-8-grammar',
+    title: 'English Grammar Basics',
+    description: 'Parts of speech, tenses, and sentence structure.',
+    subject: 'English',
+    chapter: 'Grammar',
+    class: 8,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=english&chap=grammar-basics',
+    source: 'NCERT Solutions',
+    tags: ['grammar', 'parts of speech', 'tenses', 'sentences']
+  },
+
+  // Social Science - Class 8
+  {
+    id: 'social-8-india-constitution',
+    title: 'Our Constitution',
+    description: 'Understanding the Indian Constitution and its features.',
+    subject: 'Social Science',
+    chapter: 'Constitution',
+    class: 8,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=socialscientific&chap=constitution',
+    source: 'NCERT',
+    tags: ['constitution', 'india', 'democracy', 'rights']
+  },
+
+  // Mathematics - Class 7
+  {
+    id: 'math-7-fractions',
+    title: 'Fractions and Decimals',
+    description: 'Understanding fractions, decimals, and their operations.',
+    subject: 'Mathematics',
+    chapter: 'Fractions',
+    class: 7,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/arithmetic/fractions',
+    source: 'Khan Academy',
+    tags: ['fractions', 'decimals', 'operations', 'arithmetic']
+  },
+  {
+    id: 'math-7-integers',
+    title: 'Integers',
+    description: 'Positive and negative numbers, number line.',
+    subject: 'Mathematics',
+    chapter: 'Integers',
+    class: 7,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/arithmetic/negative-numbers',
+    source: 'BYJU\'S',
+    tags: ['integers', 'negative numbers', 'number line']
+  },
+
+  // Science - Class 7
+  {
+    id: 'science-7-nutrition',
+    title: 'Nutrition in Plants and Animals',
+    description: 'How plants and animals get their nutrition.',
+    subject: 'Science',
+    chapter: 'Nutrition',
+    class: 7,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/biology',
+    source: 'Khan Academy',
+    tags: ['nutrition', 'plants', 'animals', 'biology']
+  },
+  {
+    id: 'science-7-weather',
+    title: 'Weather, Climate and Adaptations',
+    description: 'Understanding weather patterns and animal adaptations.',
+    subject: 'Science',
+    chapter: 'Weather and Climate',
+    class: 7,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/physics',
+    source: 'Vedantu',
+    tags: ['weather', 'climate', 'adaptations', 'environment']
+  },
+
+  // English - Class 7
+  {
+    id: 'english-7-comprehension',
+    title: 'Reading Comprehension',
+    description: 'Skills for understanding and analyzing texts.',
+    subject: 'English',
+    chapter: 'Comprehension',
+    class: 7,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=english&chap=comprehension',
+    source: 'NCERT Solutions',
+    tags: ['comprehension', 'reading', 'analysis', 'english']
+  },
+
+  // Social Science - Class 7
+  {
+    id: 'social-7-environment',
+    title: 'Our Environment',
+    description: 'Natural and human environment, ecosystems.',
+    subject: 'Social Science',
+    chapter: 'Environment',
+    class: 7,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=socialscientific&chap=environment',
+    source: 'NCERT',
+    tags: ['environment', 'ecosystem', 'natural', 'human']
+  },
+
+  // Mathematics - Class 6
+  {
+    id: 'math-6-whole-numbers',
+    title: 'Whole Numbers',
+    description: 'Understanding whole numbers and basic operations.',
+    subject: 'Mathematics',
+    chapter: 'Whole Numbers',
+    class: 6,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/arithmetic',
+    source: 'Khan Academy',
+    tags: ['whole numbers', 'operations', 'arithmetic', 'basics']
+  },
+  {
+    id: 'math-6-fractions',
+    title: 'Basic Fractions',
+    description: 'Introduction to fractions and their representation.',
+    subject: 'Mathematics',
+    chapter: 'Fractions',
+    class: 6,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/arithmetic/fractions',
+    source: 'BYJU\'S',
+    tags: ['fractions', 'introduction', 'representation']
+  },
+
+  // Science - Class 6
+  {
+    id: 'science-6-components',
+    title: 'Components of Food',
+    description: 'Nutrients in food and their importance.',
+    subject: 'Science',
+    chapter: 'Food Components',
+    class: 6,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/biology',
+    source: 'Khan Academy',
+    tags: ['food', 'nutrients', 'components', 'health']
+  },
+  {
+    id: 'science-6-separation',
+    title: 'Separation of Substances',
+    description: 'Methods to separate mixtures.',
+    subject: 'Science',
+    chapter: 'Separation',
+    class: 6,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/chemistry',
+    source: 'Vedantu',
+    tags: ['separation', 'mixtures', 'methods', 'chemistry']
+  },
+
+  // English - Class 6
+  {
+    id: 'english-6-vocabulary',
+    title: 'Vocabulary Building',
+    description: 'Expanding vocabulary with new words and meanings.',
+    subject: 'English',
+    chapter: 'Vocabulary',
+    class: 6,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=english&chap=vocabulary',
+    source: 'NCERT Solutions',
+    tags: ['vocabulary', 'words', 'meanings', 'english']
+  },
+
+  // Social Science - Class 6
+  {
+    id: 'social-6-ancient-civilizations',
+    title: 'Ancient Civilizations',
+    description: 'Early civilizations and their contributions.',
+    subject: 'Social Science',
+    chapter: 'Ancient History',
+    class: 6,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=socialscientific&chap=ancient-civilizations',
+    source: 'NCERT',
+    tags: ['ancient', 'civilizations', 'history', 'contributions']
+  },
+
+  // Mathematics - Class 5
+  {
+    id: 'math-5-multiplication',
+    title: 'Multiplication and Division',
+    description: 'Learning multiplication tables and division concepts.',
+    subject: 'Mathematics',
+    chapter: 'Multiplication',
+    class: 5,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/arithmetic/multiplication-division',
+    source: 'Khan Academy',
+    tags: ['multiplication', 'division', 'tables', 'arithmetic']
+  },
+  {
+    id: 'math-5-shapes',
+    title: 'Shapes and Patterns',
+    description: 'Understanding different shapes and patterns.',
+    subject: 'Mathematics',
+    chapter: 'Shapes',
+    class: 5,
+    type: 'website',
+    url: 'https://www.khanacademy.org/math/geometry',
+    source: 'BYJU\'S',
+    tags: ['shapes', 'patterns', 'geometry', 'recognition']
+  },
+
+  // Science - Class 5
+  {
+    id: 'science-5-living-things',
+    title: 'Living Things and Non-living Things',
+    description: 'Characteristics of living and non-living things.',
+    subject: 'Science',
+    chapter: 'Living Things',
+    class: 5,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/biology',
+    source: 'Khan Academy',
+    tags: ['living things', 'non-living', 'characteristics', 'biology']
+  },
+  {
+    id: 'science-5-human-body',
+    title: 'Our Body and Health',
+    description: 'Human body systems and maintaining health.',
+    subject: 'Science',
+    chapter: 'Human Body',
+    class: 5,
+    type: 'website',
+    url: 'https://www.khanacademy.org/science/health-and-medicine',
+    source: 'Vedantu',
+    tags: ['human body', 'health', 'systems', 'hygiene']
+  },
+
+  // English - Class 5
+  {
+    id: 'english-5-reading',
+    title: 'Reading Skills',
+    description: 'Developing reading comprehension and fluency.',
+    subject: 'English',
+    chapter: 'Reading',
+    class: 5,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=english&chap=reading-skills',
+    source: 'NCERT Solutions',
+    tags: ['reading', 'comprehension', 'fluency', 'english']
+  },
+
+  // Social Science - Class 5
+  {
+    id: 'social-5-india',
+    title: 'Our India',
+    description: 'Geography and culture of India.',
+    subject: 'Social Science',
+    chapter: 'India',
+    class: 5,
+    type: 'article',
+    url: 'https://ncert.nic.in/textbook.php?le=socialscientific&chap=our-india',
+    source: 'NCERT',
+    tags: ['india', 'geography', 'culture', 'states']
   }
 ];
 

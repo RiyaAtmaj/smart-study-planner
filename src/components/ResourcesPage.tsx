@@ -1,12 +1,37 @@
-import React, { useState, useMemo } from 'react';
-import { Search, ExternalLink, BookOpen, Video, FileText, Globe, HelpCircle } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, ExternalLink, BookOpen, Video, FileText, Globe, HelpCircle, Download, Eye, Wifi, WifiOff, Trash2 } from 'lucide-react';
 import { CBSE_RESOURCES, SUBJECTS, CLASSES, RESOURCE_TYPES } from '../data/resources';
+import { offlineStorage, downloadResource, isOnline, onNetworkChange } from '../offlineStorage';
 
 const ResourcesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
   const [selectedClass, setSelectedClass] = useState<number | 'All'>('All');
   const [selectedType, setSelectedType] = useState<string>('All');
+  const [offlineResources, setOfflineResources] = useState<Set<string>>(new Set());
+  const [downloading, setDownloading] = useState<Set<string>>(new Set());
+  const [online, setOnline] = useState(isOnline());
+  const [storageUsage, setStorageUsage] = useState({ used: 0, available: 0 });
+
+  // Load offline resources and storage info on mount
+  useEffect(() => {
+    const loadOfflineData = async () => {
+      try {
+        const resources = await offlineStorage.getAllOfflineResources();
+        setOfflineResources(new Set(resources.map(r => r.id)));
+        const usage = await offlineStorage.getStorageUsage();
+        setStorageUsage(usage);
+      } catch (error) {
+        console.error('Failed to load offline data:', error);
+      }
+    };
+
+    loadOfflineData();
+
+    // Listen for network changes
+    const cleanup = onNetworkChange(setOnline);
+    return cleanup;
+  }, []);
 
   const filteredResources = useMemo(() => {
     return CBSE_RESOURCES.filter(resource => {
@@ -21,6 +46,77 @@ const ResourcesPage: React.FC = () => {
       return matchesSearch && matchesSubject && matchesClass && matchesType;
     });
   }, [searchTerm, selectedSubject, selectedClass, selectedType]);
+
+  const handleDownload = async (resource: any) => {
+    if (!online) {
+      alert('You need to be online to download resources.');
+      return;
+    }
+
+    setDownloading(prev => new Set(prev).add(resource.id));
+
+    try {
+      const content = await downloadResource(resource);
+      await offlineStorage.storeResource(resource, content);
+      setOfflineResources(prev => new Set(prev).add(resource.id));
+
+      // Update storage usage
+      const usage = await offlineStorage.getStorageUsage();
+      setStorageUsage(usage);
+    } catch (error) {
+      console.error('Failed to download resource:', error);
+      alert('Failed to download resource. Please try again.');
+    } finally {
+      setDownloading(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(resource.id);
+        return newSet;
+      });
+    }
+  };
+
+  const handleViewOffline = (resource: any) => {
+    // Create a blob URL for the offline content
+    const showOfflineContent = async () => {
+      try {
+        const offlineResource = await offlineStorage.getResource(resource.id);
+        if (offlineResource) {
+          const blob = new Blob([offlineResource.content], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+        }
+      } catch (error) {
+        console.error('Failed to load offline content:', error);
+        alert('Failed to load offline content.');
+      }
+    };
+    showOfflineContent();
+  };
+
+  const handleRemoveOffline = async (resourceId: string) => {
+    try {
+      await offlineStorage.removeResource(resourceId);
+      setOfflineResources(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(resourceId);
+        return newSet;
+      });
+
+      // Update storage usage
+      const usage = await offlineStorage.getStorageUsage();
+      setStorageUsage(usage);
+    } catch (error) {
+      console.error('Failed to remove offline resource:', error);
+    }
+  };
+
+  const formatBytes = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -46,9 +142,38 @@ const ResourcesPage: React.FC = () => {
 
   return (
     <div className="page-container">
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
       <div className="page-header">
-        <h2>📚 Free Educational Resources</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <h2>📚 Free Educational Resources</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {online ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10b981' }}>
+                <Wifi size={16} />
+                <span style={{ fontSize: '0.875rem' }}>Online</span>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ef4444' }}>
+                <WifiOff size={16} />
+                <span style={{ fontSize: '0.875rem' }}>Offline</span>
+              </div>
+            )}
+          </div>
+        </div>
         <p>Access quality learning materials for CBSE syllabus (Classes 1-10)</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          <span>📁 Offline storage: {formatBytes(storageUsage.used)} used</span>
+          {storageUsage.available > 0 && (
+            <span>• {formatBytes(storageUsage.available)} available</span>
+          )}
+        </div>
       </div>
 
       {/* Search and Filters */}
@@ -197,18 +322,124 @@ const ResourcesPage: React.FC = () => {
                   {tag}
                 </span>
               ))}
+              {offlineResources.has(resource.id) && (
+                <span style={{
+                  fontSize: '0.75rem',
+                  background: '#d1fae5',
+                  color: '#065f46',
+                  padding: '0.25rem 0.5rem',
+                  borderRadius: '0.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem'
+                }}>
+                  <Download size={12} />
+                  Offline
+                </span>
+              )}
             </div>
 
-            <a
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary"
-              style={{ width: '100%', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-            >
-              Access Resource
-              <ExternalLink size={16} />
-            </a>
+            <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+              {online && !offlineResources.has(resource.id) && !downloading.has(resource.id) && (
+                <button
+                  onClick={() => handleDownload(resource)}
+                  className="btn"
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--border-color)'
+                  }}
+                >
+                  <Download size={16} />
+                  Download for Offline
+                </button>
+              )}
+
+              {downloading.has(resource.id) && (
+                <button
+                  disabled
+                  className="btn"
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    background: 'var(--primary-blue)',
+                    opacity: 0.7
+                  }}
+                >
+                  <div style={{
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid #ffffff',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  Downloading...
+                </button>
+              )}
+
+              {offlineResources.has(resource.id) && (
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => handleViewOffline(resource)}
+                    className="btn"
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      background: '#10b981'
+                    }}
+                  >
+                    <Eye size={16} />
+                    View Offline
+                  </button>
+                  <button
+                    onClick={() => handleRemoveOffline(resource.id)}
+                    className="btn"
+                    style={{
+                      padding: '0.75rem',
+                      background: '#ef4444',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    title="Remove offline content"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              )}
+
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                style={{
+                  width: '100%',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  opacity: online ? 1 : 0.5
+                }}
+              >
+                {online ? 'Access Online' : 'Offline Only'}
+                <ExternalLink size={16} />
+              </a>
+            </div>
           </div>
         ))}
       </div>
