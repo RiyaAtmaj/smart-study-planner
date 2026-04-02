@@ -145,6 +145,38 @@
   background: linear-gradient(135deg, rgba(0, 102, 255, 0.02) 0%, rgba(0, 102, 255, 0.05) 100%);
 }
 
+.tutor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.tutor-chat {
+  border-top: 1px solid var(--border-light);
+  padding-top: 1rem;
+}
+
+.tutor-chat-messages > div {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.65rem;
+  padding: 0.55rem;
+}
+
+.note-section {
+  background: linear-gradient(145deg, rgba(253, 246, 255, 0.85), rgba(228, 244, 255, 0.95));
+  border: 1px solid rgba(131, 104, 235, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+}
+
+.note-section textarea {
+  font-family: inherit;
+}
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1), var(--shadow-lg);
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.02) 0%, rgba(0, 102, 255, 0.05) 100%);
+}
+
 .subject-header {
   display: flex;
   align-items: center;

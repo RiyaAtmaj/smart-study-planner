@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Study Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-icon">📚</div>
+    <h1>You're Currently Offline</h1>
+    <p>This educational resource is not available offline. Some content has been saved locally for offline viewing.</p>
+    <p>Please connect to the internet to access online resources or view your downloaded offline content.</p>
+
+    <div>
+        <a href="/" class="btn">Go to Home</a>
+        <button onclick="window.history.back()" class="btn">Go Back</button>
+    </div>
+
+    <script>
+        // Check network status
+        function updateOnlineStatus() {
+            const status = document.querySelector('.status');
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+    </script>
+</body>
+</html>
