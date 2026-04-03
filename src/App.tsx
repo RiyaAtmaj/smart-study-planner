@@ -12,6 +12,7 @@ import HomePage from './components/HomePage';
 import AITutorPage from './components/AITutorPage';
 import GroupStudyPage from './components/GroupStudyPage';
 import NotesPage from './components/NotesPage';
+import ProfilePage from './components/ProfilePage';
 import Chatbot from './components/Chatbot';
 import './App.css';
 
@@ -161,6 +162,10 @@ function AppContent() {
           <Route
             path="/notes"
             element={<NotesPage />}
+          />
+          <Route
+            path="/profile"
+            element={<ProfilePage />}
           />
         </Routes>
         </Suspense>

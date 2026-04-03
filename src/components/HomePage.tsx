@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText } from 'lucide-react';
+import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText, User } from 'lucide-react';
 
 const HomePage: React.FC = () => {
   const features = [
@@ -38,6 +38,13 @@ const HomePage: React.FC = () => {
       description: 'Create and manage your notes with rich text editing and syntax highlighting.',
       link: '/notes',
       color: 'var(--accent-blue)'
+    },
+    {
+      icon: <User size={32} />,
+      title: 'Student Profile',
+      description: 'Customize your profile, upload photos and videos, and share your study journey.',
+      link: '/profile',
+      color: 'var(--accent-pink)'
     }
   ];
 

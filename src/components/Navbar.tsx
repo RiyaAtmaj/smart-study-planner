@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { RotateCcw, Sun, Moon, Home } from 'lucide-react';
+import { RotateCcw, Sun, Moon, Home, User } from 'lucide-react';
 
 interface NavbarProps {
   onReset: () => void;
@@ -25,6 +25,12 @@ const Navbar: React.FC<NavbarProps> = ({ onReset, onToggleTheme, theme }) => {
           <button className="reset-btn">
             <Home size={16} />
             Home
+          </button>
+        </Link>
+        <Link to="/profile" style={{ textDecoration: 'none' }}>
+          <button className="reset-btn">
+            <User size={16} />
+            Profile
           </button>
         </Link>
         <button className="reset-btn" onClick={onToggleTheme}>
