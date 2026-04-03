@@ -13,9 +13,8 @@ import HomePage from './components/HomePage';
 import AITutorPage from './components/AITutorPage';
 import GroupStudyPage from './components/GroupStudyPage';
 import NotesPage from './components/NotesPage';
-import ProfilePage from './components/ProfilePage';
 import GamificationPage from './components/GamificationPage';
-import AIRecommendationsPage from './components/AIRecommendationsPage';
+import FocusSessionPage from './components/FocusSessionPage';
 import Chatbot from './components/Chatbot';
 import { I18nProvider } from './i18n';
 import './App.css';
@@ -165,20 +164,16 @@ function AppContent() {
             element={<GroupStudyPage />}
           />
           <Route
+            path="/focus-session/:duration"
+            element={<FocusSessionPage />}
+          />
+          <Route
             path="/notes"
             element={<NotesPage />}
           />
           <Route
-            path="/profile"
-            element={<ProfilePage />}
-          />
-          <Route
             path="/gamification"
             element={<GamificationPage />}
-          />
-          <Route
-            path="/ai-recommendations"
-            element={<AIRecommendationsPage />}
           />
         </Routes>
         </Suspense>

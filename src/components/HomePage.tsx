@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText, User, Trophy, Brain } from 'lucide-react';
+import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText, Trophy } from 'lucide-react';
 import { useI18n } from '../i18n';
 
 const HomePage: React.FC = () => {
@@ -42,25 +42,11 @@ const HomePage: React.FC = () => {
       color: 'var(--accent-blue)'
     },
     {
-      icon: <User size={32} />,
-      title: t('feature.profile'),
-      description: 'Customize your profile, upload photos and videos, and share your study journey.',
-      link: '/profile',
-      color: 'var(--accent-pink)'
-    },
-    {
       icon: <Trophy size={32} />,
       title: t('feature.achievements'),
       description: 'Earn points, unlock badges, and maintain study streaks for motivation.',
       link: '/gamification',
       color: 'var(--accent-yellow)'
-    },
-    {
-      icon: <Brain size={32} />,
-      title: t('feature.ai_recommendations'),
-      description: 'Get personalized study insights and optimal learning strategies based on your patterns.',
-      link: '/ai-recommendations',
-      color: 'var(--accent-cyan)'
     }
   ];
 

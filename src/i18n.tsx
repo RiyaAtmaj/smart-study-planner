@@ -9,7 +9,6 @@ interface Translations {
 const translations: Translations = {
   // Navigation
   'nav.home': { en: 'Home', hi: 'होम' },
-  'nav.profile': { en: 'Profile', hi: 'प्रोफ़ाइल' },
   'nav.settings': { en: 'Settings', hi: 'सेटिंग्स' },
 
   // Home Page
@@ -22,9 +21,7 @@ const translations: Translations = {
   'feature.ai_tutor': { en: 'AI Tutor', hi: 'एआई ट्यूटर' },
   'feature.notes': { en: 'Notes', hi: 'नोट्स' },
   'feature.groups': { en: 'Group Study', hi: 'ग्रुप स्टडी' },
-  'feature.profile': { en: 'Profile', hi: 'प्रोफ़ाइल' },
   'feature.achievements': { en: 'Achievements', hi: 'उपलब्धियाँ' },
-  'feature.ai_recommendations': { en: 'AI Recommendations', hi: 'एआई सिफारिशें' },
 
   // Common
   'common.save': { en: 'Save', hi: 'सेव करें' },

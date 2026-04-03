@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
 const tutorModes = [
@@ -34,6 +34,7 @@ const tutorModes = [
 ];
 
 const AITutorPage: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTutor, setActiveTutor] = React.useState<typeof tutorModes[number] | null>(null);
   const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'system' | 'user' | 'assistant'; content: string }>>([]);
   const [userInput, setUserInput] = React.useState('');
@@ -125,9 +126,12 @@ const AITutorPage: React.FC = () => {
 
   return (
     <div className="page-container">
-      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary-blue)' }}>
+      <button 
+        onClick={() => navigate('/')} 
+        style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary-blue)', background: 'none', border: 'none', cursor: 'pointer' }}
+      >
         <ArrowLeft size={18} /> Back to Home
-      </Link>
+      </button>
 
       <h2 style={{ marginBottom: '0.75rem' }}>AI Tutor Section</h2>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Select an AI tutoring mode and start a chat. Use a Gemini API key for live results, or fallback to offline mock responses.</p>

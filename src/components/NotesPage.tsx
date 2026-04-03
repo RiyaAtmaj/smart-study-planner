@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -16,6 +16,7 @@ import Heading from '@tiptap/extension-heading';
 const lowlight = createLowlight(common);
 
 const NotesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [savedNotes, setSavedNotes] = React.useState<Array<{ id: string; title: string; content: string; tags: string[]; createdAt: Date }>>([]);
   const [selectedNote, setSelectedNote] = React.useState<string | null>(null);
   const [noteTitle, setNoteTitle] = React.useState('');
@@ -128,9 +129,12 @@ const NotesPage: React.FC = () => {
 
   return (
     <div className="page-container">
-      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary-blue)' }}>
+      <button 
+        onClick={() => navigate('/')} 
+        style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary-blue)', background: 'none', border: 'none', cursor: 'pointer' }}
+      >
         <ArrowLeft size={18} /> Back to Home
-      </Link>
+      </button>
 
       <h2 style={{ marginBottom: '0.75rem' }}>Notes Section</h2>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Create, edit, and manage rich text notes with optional code highlighting.</p>
