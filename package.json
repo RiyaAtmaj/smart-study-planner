@@ -9,11 +9,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@tiptap/extension-bold": "^3.22.1",
+    "@tiptap/extension-bullet-list": "^3.22.1",
+    "@tiptap/extension-code-block-lowlight": "^3.22.1",
+    "@tiptap/extension-heading": "^3.22.1",
+    "@tiptap/extension-italic": "^3.22.1",
+    "@tiptap/extension-list-item": "^3.22.1",
+    "@tiptap/extension-ordered-list": "^3.22.1",
+    "@tiptap/extension-underline": "^3.22.1",
+    "@tiptap/react": "^3.22.1",
+    "@tiptap/starter-kit": "^3.22.1",
+    "date-fns": "^2.30.0",
+    "highlight.js": "^11.11.1",
+    "lowlight": "^3.3.0",
+    "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.0",
-    "lucide-react": "^0.294.0",
-    "date-fns": "^2.30.0"
+    "react-router-dom": "^6.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

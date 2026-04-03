@@ -9,6 +9,10 @@ import SubjectSetup from './components/SubjectSetup';
 import PlanConfig from './components/PlanConfig';
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
+import AITutorPage from './components/AITutorPage';
+import GroupStudyPage from './components/GroupStudyPage';
+import NotesPage from './components/NotesPage';
+import Chatbot from './components/Chatbot';
 import './App.css';
 
 const Dashboard = React.lazy(() => import('./components/Dashboard'));
@@ -146,9 +150,22 @@ function AppContent() {
             path="/resources"
             element={<ResourcesPage />}
           />
+          <Route
+            path="/ai-tutor"
+            element={<AITutorPage />}
+          />
+          <Route
+            path="/group-study"
+            element={<GroupStudyPage />}
+          />
+          <Route
+            path="/notes"
+            element={<NotesPage />}
+          />
         </Routes>
         </Suspense>
       </main>
+      <Chatbot />
     </div>
   );
 }
