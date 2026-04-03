@@ -1,0 +1,26 @@
+[
+  {
+    "id": "math-10-quadratic-equations",
+    "title": "Quadratic Equations - Factorization Method",
+    "description": "Solving quadratic equations using factorization, completing square, and quadratic formula.",
+    "subject": "Mathematics",
+    "chapter": "Quadratic Equations",
+    "class": 10,
+    "type": "website",
+    "url": "https://www.khanacademy.org/math/algebra/quadratics",
+    "source": "Khan Academy",
+    "tags": ["quadratic", "factorization", "discriminant", "roots"]
+  },
+  {
+    "id": "science-10-chemical-reactions",
+    "title": "Chemical Reactions and Equations",
+    "description": "Types of chemical reactions, balancing equations, and oxidation-reduction reactions.",
+    "subject": "Science",
+    "chapter": "Chemical Reactions and Equations",
+    "class": 10,
+    "type": "website",
+    "url": "https://www.khanacademy.org/science/chemistry/chemical-reactions-stoichiometry",
+    "source": "Khan Academy",
+    "tags": ["chemical reactions", "balancing", "oxidation", "reduction"]
+  }
+]

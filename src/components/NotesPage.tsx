@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -12,6 +12,7 @@ import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
 import ListItem from '@tiptap/extension-list-item';
 import Heading from '@tiptap/extension-heading';
+import { getNotes, createNote, updateNote, deleteNoteApi } from '../api';
 
 const lowlight = createLowlight(common);
 
@@ -39,19 +40,39 @@ const NotesPage: React.FC = () => {
     content: '',
   });
 
-  const saveNote = () => {
+  useEffect(() => {
+    const fetchNotes = async () => {
+      const notes = await getNotes();
+      setSavedNotes(notes);
+    };
+
+    fetchNotes();
+  }, []);
+
+  const saveNote = async () => {
     const content = editor?.getHTML() || '';
     const title = noteTitle.trim() || 'Untitled Note';
     const tags = noteTags.split(',').map((tag) => tag.trim()).filter(Boolean);
 
     if (!content.trim()) return;
 
-    const newNote = { id: Date.now().toString(), title, content, tags, createdAt: new Date() };
-    setSavedNotes((prev) => [newNote, ...prev]);
+    if (selectedNote) {
+      const updated = await updateNote(selectedNote, { title, content, tags });
+      if (updated) {
+        setSavedNotes((prev) => prev.map((note) => (note.id === selectedNote ? updated : note)));
+        setSelectedNote(updated.id);
+      }
+    } else {
+      const created = await createNote({ title, content, tags });
+      if (created) {
+        setSavedNotes((prev) => [created, ...prev]);
+        setSelectedNote(created.id);
+      }
+    }
+
     setNoteTitle('');
     setNoteTags('');
     editor?.commands.setContent('');
-    setSelectedNote(null);
   };
 
   const selectNote = (noteId: string) => {
@@ -64,7 +85,10 @@ const NotesPage: React.FC = () => {
     }
   };
 
-  const deleteNote = (noteId: string) => {
+  const deleteNote = async (noteId: string) => {
+    const success = await deleteNoteApi(noteId);
+    if (!success) return;
+
     setSavedNotes((prev) => prev.filter((n) => n.id !== noteId));
     if (selectedNote === noteId) {
       setSelectedNote(null);
