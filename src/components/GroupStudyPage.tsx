@@ -120,7 +120,7 @@ const GroupStudyPage: React.FC = () => {
       setChatMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      alert('Failed to send message. Please check Firebase configuration.');
     }
   };
 
@@ -141,7 +141,7 @@ const GroupStudyPage: React.FC = () => {
       setNoteContent('');
     } catch (error) {
       console.error('Error sharing note:', error);
-      alert('Failed to share note. Please try again.');
+      alert('Failed to share note. Please check Firebase configuration.');
     }
   };
 
@@ -161,7 +161,7 @@ const GroupStudyPage: React.FC = () => {
       setSessionTitle('');
     } catch (error) {
       console.error('Error starting study session:', error);
-      alert('Failed to start study session. Please try again.');
+      alert('Failed to start study session. Please check Firebase configuration.');
     }
   };
 
@@ -175,7 +175,7 @@ const GroupStudyPage: React.FC = () => {
       });
     } catch (error) {
       console.error('Error ending study session:', error);
-      alert('Failed to end study session. Please try again.');
+      alert('Failed to end study session. Please check Firebase configuration.');
     }
   };
 
@@ -190,6 +190,18 @@ const GroupStudyPage: React.FC = () => {
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary-blue)' }}>
           <ArrowLeft size={18} /> Back to Home
         </Link>
+
+        {!firebaseService.isAvailable() && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <div className="flex items-center gap-2 text-yellow-800">
+              <span className="text-lg">⚠️</span>
+              <strong>Firebase Not Configured</strong>
+            </div>
+            <p className="text-yellow-700 mt-1">
+              Real-time features are disabled. To enable group chat and collaboration, please set up Firebase by following the instructions in <code>FIREBASE_SETUP.md</code>.
+            </p>
+          </div>
+        )}
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6" style={{ border: '1px solid var(--border-light)' }}>
           <h1 className="text-3xl font-bold mb-2">👥 Collaborative Study</h1>

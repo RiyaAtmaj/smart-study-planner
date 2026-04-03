@@ -1,5 +1,6 @@
 import { ref, onValue, set, push, update, remove, get } from 'firebase/database';
 import { database } from '../firebase';
+import { isFirebaseConfigured } from '../config/firebaseConfig';
 
 export interface Group {
   id: string;
@@ -36,8 +37,13 @@ export interface StudySession {
 }
 
 class FirebaseService {
+  private isConfigured = isFirebaseConfigured();
+
   // Groups
   async createGroup(group: Omit<Group, 'id'>): Promise<string> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const groupsRef = ref(database, 'groups');
     const newGroupRef = push(groupsRef);
     await set(newGroupRef, group);
@@ -45,16 +51,28 @@ class FirebaseService {
   }
 
   async updateGroup(groupId: string, updates: Partial<Group>): Promise<void> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const groupRef = ref(database, `groups/${groupId}`);
     await update(groupRef, updates);
   }
 
   async deleteGroup(groupId: string): Promise<void> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const groupRef = ref(database, `groups/${groupId}`);
     await remove(groupRef);
   }
 
   subscribeToGroups(callback: (groups: Group[]) => void): () => void {
+    if (!this.isConfigured) {
+      // Return empty array and no-op unsubscribe for demo mode
+      callback([]);
+      return () => {};
+    }
+
     const groupsRef = ref(database, 'groups');
     const unsubscribe = onValue(groupsRef, (snapshot) => {
       const data = snapshot.val();
@@ -73,6 +91,9 @@ class FirebaseService {
 
   // Chat Messages
   async sendMessage(message: Omit<ChatMessage, 'id'>): Promise<string> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const messagesRef = ref(database, `messages/${message.groupId}`);
     const newMessageRef = push(messagesRef);
     await set(newMessageRef, message);
@@ -80,6 +101,11 @@ class FirebaseService {
   }
 
   subscribeToMessages(groupId: string, callback: (messages: ChatMessage[]) => void): () => void {
+    if (!this.isConfigured) {
+      callback([]);
+      return () => {};
+    }
+
     const messagesRef = ref(database, `messages/${groupId}`);
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
@@ -98,6 +124,9 @@ class FirebaseService {
 
   // Shared Notes
   async shareNote(note: Omit<SharedNote, 'id'>): Promise<string> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const notesRef = ref(database, `notes/${note.groupId}`);
     const newNoteRef = push(notesRef);
     await set(newNoteRef, note);
@@ -105,6 +134,11 @@ class FirebaseService {
   }
 
   subscribeToNotes(groupId: string, callback: (notes: SharedNote[]) => void): () => void {
+    if (!this.isConfigured) {
+      callback([]);
+      return () => {};
+    }
+
     const notesRef = ref(database, `notes/${groupId}`);
     const unsubscribe = onValue(notesRef, (snapshot) => {
       const data = snapshot.val();
@@ -123,6 +157,9 @@ class FirebaseService {
 
   // Study Sessions
   async createStudySession(session: Omit<StudySession, 'id'>): Promise<string> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const sessionsRef = ref(database, `sessions/${session.groupId}`);
     const newSessionRef = push(sessionsRef);
     await set(newSessionRef, session);
@@ -130,11 +167,19 @@ class FirebaseService {
   }
 
   async updateStudySession(groupId: string, sessionId: string, updates: Partial<StudySession>): Promise<void> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const sessionRef = ref(database, `sessions/${groupId}/${sessionId}`);
     await update(sessionRef, updates);
   }
 
   subscribeToStudySessions(groupId: string, callback: (sessions: StudySession[]) => void): () => void {
+    if (!this.isConfigured) {
+      callback([]);
+      return () => {};
+    }
+
     const sessionsRef = ref(database, `sessions/${groupId}`);
     const unsubscribe = onValue(sessionsRef, (snapshot) => {
       const data = snapshot.val();
@@ -153,14 +198,25 @@ class FirebaseService {
 
   // User Management
   async getUserProfile(userId: string): Promise<any> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const userRef = ref(database, `users/${userId}`);
     const snapshot = await get(userRef);
     return snapshot.val();
   }
 
   async updateUserProfile(userId: string, profile: any): Promise<void> {
+    if (!this.isConfigured) {
+      throw new Error('Firebase not configured. Please set up Firebase in .env file.');
+    }
     const userRef = ref(database, `users/${userId}`);
     await update(userRef, profile);
+  }
+
+  // Check if Firebase is available
+  isAvailable(): boolean {
+    return this.isConfigured;
   }
 }
 
