@@ -3,6 +3,20 @@ import { Link } from 'react-router-dom';
 import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText, User } from 'lucide-react';
 
 const HomePage: React.FC = () => {
+  const [profile, setProfile] = React.useState({
+    username: 'Student',
+    bio: 'Add your bio and profile picture from Profile page',
+    profilePic: 'https://via.placeholder.com/80/CCCCCC/FFFFFF?text=P',
+  });
+
+  React.useEffect(() => {
+    const savedProfile = localStorage.getItem('studyai-profile');
+    if (savedProfile) {
+      const parsed = JSON.parse(savedProfile);
+      setProfile((prev) => ({ ...prev, ...parsed }));
+    }
+  }, []);
+
   const features = [
     {
       icon: <BookOpen size={32} />,
@@ -41,9 +55,9 @@ const HomePage: React.FC = () => {
     },
     {
       icon: <User size={32} />,
-      title: 'Student Profile',
-      description: 'Customize your profile, upload photos and videos, and share your study journey.',
-      link: '/profile',
+      title: 'Upload Resources',
+      description: 'Share your study resources like documents, images or links with peers.',
+      link: '/resources',
       color: 'var(--accent-pink)'
     }
   ];
@@ -57,12 +71,36 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="page-container">
-      {/* Hero Section */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-        padding: '2rem 0'
-      }}>
+      {/* Layout: top-left profile summary + hero */}
+      <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', marginBottom: '2rem' }}>
+        <div style={{ minWidth: '250px', position: 'sticky', top: '1rem', alignSelf: 'flex-start' }}>
+          <div className="subject-card" style={{ padding: '1rem', textAlign: 'left' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <img
+                src={profile.profilePic || 'https://via.placeholder.com/80/CCCCCC/FFFFFF?text=P'}
+                alt="Profile"
+                style={{ width: 56, height: 56, borderRadius: '999px', objectFit: 'cover' }}
+              />
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>{profile.username || 'Student'}</h3>
+                <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{profile.bio || 'No bio yet'}</p>
+              </div>
+            </div>
+            <Link to="/profile" style={{ textDecoration: 'none' }}>
+              <button className="reset-btn" style={{ width: '100%', marginTop: '1rem' }}>
+                Edit Profile
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          {/* Hero Section */}
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '3rem',
+            padding: '2rem 0'
+          }}>
         <h1 style={{
           fontSize: '3rem',
           fontWeight: '800',
@@ -83,6 +121,8 @@ const HomePage: React.FC = () => {
           and access free educational resources for CBSE syllabus.
         </p>
       </div>
+    </div>
+  </div>
 
       {/* Feature Cards */}
       <div style={{
