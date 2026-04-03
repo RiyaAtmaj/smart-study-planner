@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
 
 const quotes = [
   'Small progress is still progress. Keep going!',
@@ -26,12 +25,13 @@ const PageMotivation: React.FC = () => {
       <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
         <button
           onClick={() => (canGoBack ? navigate(-1) : navigate('/'))}
-          className="flex items-center gap-2 text-sm sm:text-base font-semibold text-indigo-700 bg-white border border-indigo-200 rounded-lg px-3 py-2 hover:bg-indigo-50 transition"
+          className="flex items-center gap-2 text-sm sm:text-base font-semibold text-indigo-700 bg-white border border-indigo-300 rounded-full px-4 py-2 hover:bg-indigo-50 hover:border-indigo-400 hover:shadow-lg transition-all duration-200"
+          style={{ boxShadow: '0 6px 16px rgba(79, 70, 229, 0.16)' }}
         >
-          <ChevronLeft size={16} />
-          Back
+          <span className="text-indigo-500">←</span>
+          <span className="text-indigo-700">Back</span>
         </button>
-        <div className="text-sm sm:text-base text-gray-700 font-medium italic tracking-wide">"{quote}"</div>
+        <div className="text-sm sm:text-base text-gray-700 font-semibold italic tracking-wider">"{quote}"</div>
         <div className="w-14" />
       </div>
     </div>

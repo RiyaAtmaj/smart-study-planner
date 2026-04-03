@@ -1,40 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, MessageCircle, FileText, Users, Send, Clock, Play, Pause } from 'lucide-react';
-
-interface Group {
-  id: string;
-  name: string;
-  members: string[];
-  createdAt: string;
-}
-
-interface ChatMessage {
-  id: string;
-  groupId: string;
-  user: string;
-  message: string;
-  timestamp: string;
-}
-
-interface SharedNote {
-  id: string;
-  groupId: string;
-  title: string;
-  content: string;
-  author: string;
-  timestamp: string;
-}
-
-interface StudySession {
-  id: string;
-  groupId: string;
-  title: string;
-  startTime: string;
-  endTime?: string;
-  participants: string[];
-  isActive: boolean;
-}
+import { firebaseService, Group, ChatMessage, SharedNote, StudySession } from '../services/firebaseService';
 
 const GroupStudyPage: React.FC = () => {
   const [groupName, setGroupName] = useState('');
@@ -54,108 +21,162 @@ const GroupStudyPage: React.FC = () => {
   // Sessions state
   const [sessionTitle, setSessionTitle] = useState('');
   const [studySessions, setStudySessions] = useState<StudySession[]>([]);
-  const [currentUser] = useState('You'); // In real app, this would come from auth
+  const [currentUser, setCurrentUser] = useState<string>(() => {
+    return localStorage.getItem('studyai-current-user') || 'Guest';
+  });
+  const [memberName, setMemberName] = useState<string>('');
 
   useEffect(() => {
-    // Load data from localStorage
-    const savedGroups = localStorage.getItem('studyai-groups');
-    if (savedGroups) setGroups(JSON.parse(savedGroups));
+    localStorage.setItem('studyai-current-user', currentUser);
+  }, [currentUser]);
 
-    const savedMessages = localStorage.getItem('studyai-group-chat');
-    if (savedMessages) setChatMessages(JSON.parse(savedMessages));
+  useEffect(() => {
+    // Subscribe to real-time updates from Firebase
+    const unsubscribeGroups = firebaseService.subscribeToGroups((groups) => {
+      setGroups(groups);
+    });
 
-    const savedNotes = localStorage.getItem('studyai-shared-notes');
-    if (savedNotes) setSharedNotes(JSON.parse(savedNotes));
-
-    const savedSessions = localStorage.getItem('studyai-study-sessions');
-    if (savedSessions) setStudySessions(JSON.parse(savedSessions));
-
-    // Poll for updates every 5 seconds (simulating real-time)
-    const interval = setInterval(() => {
-      const updatedMessages = localStorage.getItem('studyai-group-chat');
-      if (updatedMessages) setChatMessages(JSON.parse(updatedMessages));
-
-      const updatedNotes = localStorage.getItem('studyai-shared-notes');
-      if (updatedNotes) setSharedNotes(JSON.parse(updatedNotes));
-
-      const updatedSessions = localStorage.getItem('studyai-study-sessions');
-      if (updatedSessions) setStudySessions(JSON.parse(updatedSessions));
-    }, 5000);
-
-    return () => clearInterval(interval);
+    return () => {
+      unsubscribeGroups();
+    };
   }, []);
 
-  const createGroup = () => {
+  // Subscribe to messages, notes, and sessions when a group is selected
+  useEffect(() => {
+    if (!selectedGroup) return;
+
+    const unsubscribeMessages = firebaseService.subscribeToMessages(selectedGroup, (messages) => {
+      setChatMessages(messages);
+    });
+
+    const unsubscribeNotes = firebaseService.subscribeToNotes(selectedGroup, (notes) => {
+      setSharedNotes(notes);
+    });
+
+    const unsubscribeSessions = firebaseService.subscribeToStudySessions(selectedGroup, (sessions) => {
+      setStudySessions(sessions);
+    });
+
+    return () => {
+      unsubscribeMessages();
+      unsubscribeNotes();
+      unsubscribeSessions();
+    };
+  }, [selectedGroup]);
+
+  const createGroup = async () => {
     const cleaned = groupName.trim();
     if (!cleaned) return;
-    const newGroup: Group = {
-      id: Date.now().toString(),
-      name: cleaned,
-      members: [currentUser],
-      createdAt: new Date().toISOString()
-    };
-    const updatedGroups = [...groups, newGroup];
-    setGroups(updatedGroups);
-    localStorage.setItem('studyai-groups', JSON.stringify(updatedGroups));
-    setGroupName('');
+
+    try {
+      const newGroup = {
+        name: cleaned,
+        members: [currentUser],
+        createdAt: new Date().toISOString()
+      };
+
+      await firebaseService.createGroup(newGroup);
+      setGroupName('');
+    } catch (error) {
+      console.error('Error creating group:', error);
+      alert('Failed to create group. Please try again.');
+    }
   };
 
-  const sendMessage = () => {
+  const joinGroup = async () => {
+    if (!selectedGroup || !memberName.trim()) return;
+
+    try {
+      const joinedName = memberName.trim();
+      const group = groups.find(g => g.id === selectedGroup);
+      if (!group) return;
+
+      const updatedMembers = [...group.members];
+      if (!updatedMembers.includes(joinedName)) {
+        updatedMembers.push(joinedName);
+      }
+
+      await firebaseService.updateGroup(selectedGroup, { members: updatedMembers });
+      setCurrentUser(joinedName);
+      setMemberName('');
+    } catch (error) {
+      console.error('Error joining group:', error);
+      alert('Failed to join group. Please try again.');
+    }
+  };
+
+  const sendMessage = async () => {
     if (!selectedGroup || !chatMessage.trim()) return;
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      groupId: selectedGroup,
-      user: currentUser,
-      message: chatMessage,
-      timestamp: new Date().toISOString()
-    };
-    const updatedMessages = [...chatMessages, newMessage];
-    setChatMessages(updatedMessages);
-    localStorage.setItem('studyai-group-chat', JSON.stringify(updatedMessages));
-    setChatMessage('');
+
+    try {
+      const newMessage = {
+        groupId: selectedGroup,
+        user: currentUser,
+        message: chatMessage,
+        timestamp: new Date().toISOString()
+      };
+
+      await firebaseService.sendMessage(newMessage);
+      setChatMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+    }
   };
 
-  const shareNote = () => {
+  const shareNote = async () => {
     if (!selectedGroup || !noteTitle.trim() || !noteContent.trim()) return;
-    const newNote: SharedNote = {
-      id: Date.now().toString(),
-      groupId: selectedGroup,
-      title: noteTitle,
-      content: noteContent,
-      author: currentUser,
-      timestamp: new Date().toISOString()
-    };
-    const updatedNotes = [...sharedNotes, newNote];
-    setSharedNotes(updatedNotes);
-    localStorage.setItem('studyai-shared-notes', JSON.stringify(updatedNotes));
-    setNoteTitle('');
-    setNoteContent('');
+
+    try {
+      const newNote = {
+        groupId: selectedGroup,
+        title: noteTitle,
+        content: noteContent,
+        author: currentUser,
+        timestamp: new Date().toISOString()
+      };
+
+      await firebaseService.shareNote(newNote);
+      setNoteTitle('');
+      setNoteContent('');
+    } catch (error) {
+      console.error('Error sharing note:', error);
+      alert('Failed to share note. Please try again.');
+    }
   };
 
-  const startStudySession = () => {
+  const startStudySession = async () => {
     if (!selectedGroup || !sessionTitle.trim()) return;
-    const newSession: StudySession = {
-      id: Date.now().toString(),
-      groupId: selectedGroup,
-      title: sessionTitle,
-      startTime: new Date().toISOString(),
-      participants: [currentUser],
-      isActive: true
-    };
-    const updatedSessions = [...studySessions, newSession];
-    setStudySessions(updatedSessions);
-    localStorage.setItem('studyai-study-sessions', JSON.stringify(updatedSessions));
-    setSessionTitle('');
+
+    try {
+      const newSession = {
+        groupId: selectedGroup,
+        title: sessionTitle,
+        startTime: new Date().toISOString(),
+        participants: [currentUser],
+        isActive: true
+      };
+
+      await firebaseService.createStudySession(newSession);
+      setSessionTitle('');
+    } catch (error) {
+      console.error('Error starting study session:', error);
+      alert('Failed to start study session. Please try again.');
+    }
   };
 
-  const endStudySession = (sessionId: string) => {
-    const updatedSessions = studySessions.map(session =>
-      session.id === sessionId
-        ? { ...session, endTime: new Date().toISOString(), isActive: false }
-        : session
-    );
-    setStudySessions(updatedSessions);
-    localStorage.setItem('studyai-study-sessions', JSON.stringify(updatedSessions));
+  const endStudySession = async (sessionId: string) => {
+    if (!selectedGroup) return;
+
+    try {
+      await firebaseService.updateStudySession(selectedGroup, sessionId, {
+        endTime: new Date().toISOString(),
+        isActive: false
+      });
+    } catch (error) {
+      console.error('Error ending study session:', error);
+      alert('Failed to end study session. Please try again.');
+    }
   };
 
   const activeGroup = groups.find(g => g.id === selectedGroup);
@@ -173,6 +194,16 @@ const GroupStudyPage: React.FC = () => {
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6" style={{ border: '1px solid var(--border-light)' }}>
           <h1 className="text-3xl font-bold mb-2">👥 Collaborative Study</h1>
           <p className="text-gray-600">Real-time group chat, shared notes, and live study sessions</p>
+          <div className="mt-4 flex flex-wrap gap-3 items-center">
+            <label className="font-medium text-sm">Your name:</label>
+            <input
+              value={currentUser}
+              onChange={(e) => setCurrentUser(e.target.value)}
+              className="px-3 py-1 border rounded" 
+              placeholder="e.g. Akash"
+            />
+            <span className="text-gray-500 text-sm">Current user for chat/actions</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -218,6 +249,21 @@ const GroupStudyPage: React.FC = () => {
                   ))
                 )}
               </div>
+              <div className="mt-4">
+                <label className="block text-sm font-semibold mb-2">Join Group</label>
+                <input
+                  value={memberName}
+                  onChange={(e) => setMemberName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="w-full p-2 border rounded mb-2"
+                />
+                <button
+                  onClick={joinGroup}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  Join Selected Group
+                </button>
+              </div>
             </div>
           </div>
 
@@ -235,6 +281,13 @@ const GroupStudyPage: React.FC = () => {
                 <div className="p-4 border-b" style={{ borderColor: 'var(--border-light)' }}>
                   <h2 className="text-xl font-bold">{activeGroup.name}</h2>
                   <p className="text-gray-600">{activeGroup.members.length} members</p>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    {activeGroup.members.map((member) => (
+                      <span key={member} className="px-2 py-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-full">
+                        {member}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Tabs */}
