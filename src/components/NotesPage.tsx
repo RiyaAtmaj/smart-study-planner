@@ -80,7 +80,7 @@ const NotesPage: React.FC = () => {
         }
       }
     } catch (error) {
-      alert('Error saving note: ' + error.message);
+      alert('Error saving note: ' + (error instanceof Error ? error.message : String(error)));
     }
   };
 
