@@ -90,4 +90,4 @@ app.delete('/api/notes/:id', (req, res) => {
   res.status(204).end();
 });
 
-app.listen(PORT, () => console.log(`Backend API running: http://localhost:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Backend API running: http://0.0.0.0:${PORT}`));

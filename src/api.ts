@@ -1,6 +1,6 @@
 import { AppState } from './types';
 
-const API_BASE = ((import.meta as any).env?.VITE_API_URL as string) || 'http://localhost:4000';
+const API_BASE = '';
 
 export const loadServerState = async (): Promise<AppState | null> => {
   try {

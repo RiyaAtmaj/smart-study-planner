@@ -23,7 +23,6 @@ const NotesPage: React.FC = () => {
   const [noteTitle, setNoteTitle] = React.useState('');
   const [noteTags, setNoteTags] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [aiSummary, setAiSummary] = React.useState('');
 
   const editor = useEditor({
     extensions: [
@@ -56,23 +55,33 @@ const NotesPage: React.FC = () => {
 
     if (!content.trim()) return;
 
-    if (selectedNote) {
-      const updated = await updateNote(selectedNote, { title, content, tags });
-      if (updated) {
-        setSavedNotes((prev) => prev.map((note) => (note.id === selectedNote ? updated : note)));
-        setSelectedNote(updated.id);
+    try {
+      if (selectedNote) {
+        const updated = await updateNote(selectedNote, { title, content, tags });
+        if (updated) {
+          setSavedNotes((prev) => prev.map((note) => (note.id === selectedNote ? updated : note)));
+          setSelectedNote(updated.id);
+          alert('Note updated successfully!');
+        } else {
+          alert('Failed to update note. Please check if the backend is running.');
+        }
+      } else {
+        const created = await createNote({ title, content, tags });
+        if (created) {
+          setSavedNotes((prev) => [created, ...prev]);
+          setSelectedNote(created.id);
+          alert('Note saved successfully!');
+          // Clear for new note
+          setNoteTitle('');
+          setNoteTags('');
+          editor?.commands.setContent('');
+        } else {
+          alert('Failed to save note. Please check if the backend is running.');
+        }
       }
-    } else {
-      const created = await createNote({ title, content, tags });
-      if (created) {
-        setSavedNotes((prev) => [created, ...prev]);
-        setSelectedNote(created.id);
-      }
+    } catch (error) {
+      alert('Error saving note: ' + error.message);
     }
-
-    setNoteTitle('');
-    setNoteTags('');
-    editor?.commands.setContent('');
   };
 
   const selectNote = (noteId: string) => {
@@ -122,33 +131,6 @@ const NotesPage: React.FC = () => {
     a.download = `${note.title}.md`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const generateSummary = async () => {
-    if (!selectedNote) return;
-    const note = savedNotes.find(n => n.id === selectedNote);
-    if (!note) return;
-    const apiKey = localStorage.getItem('geminiApiKey');
-    if (!apiKey) {
-      setAiSummary('Please set your Gemini API key in the AI Tutor section.');
-      return;
-    }
-    const prompt = `Summarize the following note in 2-3 sentences:\n\n${note.content.replace(/<[^>]*>/g, '')}`;
-    const endpoint = `https://generativeai.googleapis.com/v1beta2/models/gemini-1.5-flash:generate?key=${encodeURIComponent(apiKey)}`;
-    const requestBody = { prompt: { text: prompt }, temperature: 0.2, maxOutputTokens: 200 };
-    try {
-      const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
-      const data = await response.json();
-      if (!response.ok) {
-        setAiSummary(`Error: ${data.error?.message || response.statusText}`);
-        return;
-      }
-      const candidate = data.candidates?.[0];
-      const summary = candidate?.content?.find((c: any) => c.type === 'output_text')?.text || candidate?.content?.[0]?.text || '';
-      setAiSummary(summary || 'No summary generated.');
-    } catch (error) {
-      setAiSummary('Error generating summary.');
-    }
   };
 
   return (
@@ -245,14 +227,8 @@ const NotesPage: React.FC = () => {
                 <strong>Actions:</strong>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.25rem' }}>
                   <button onClick={exportNote} className="btn btn-primary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }}>Export as Markdown</button>
-                  <button onClick={generateSummary} className="btn btn-primary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }}>Generate AI Summary</button>
                 </div>
               </div>
-              {aiSummary && (
-                <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: 'var(--bg-primary)', borderRadius: '0.5rem' }}>
-                  <strong>AI Summary:</strong> {aiSummary}
-                </div>
-              )}
             </>
           ) : (
             <p style={{ color: 'var(--text-secondary)' }}>Select a note to preview details.</p>
