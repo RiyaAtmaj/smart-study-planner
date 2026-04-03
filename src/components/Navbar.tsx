@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { RotateCcw, Sun, Moon, Home, User } from 'lucide-react';
+import LanguageSelector from './LanguageSelector';
 
 interface NavbarProps {
   onReset: () => void;
@@ -33,6 +34,7 @@ const Navbar: React.FC<NavbarProps> = ({ onReset, onToggleTheme, theme }) => {
             Profile
           </button>
         </Link>
+        <LanguageSelector />
         <button className="reset-btn" onClick={onToggleTheme}>
           {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
           {theme === 'light' ? 'Dark' : 'Light'}

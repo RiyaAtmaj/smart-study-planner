@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { AppState } from './types';
+import PageMotivation from './components/PageMotivation';
 import { loadFromStorage, saveToStorage } from './storage';
 import { SUBJECTS } from './data';
 import AuthPage from './components/AuthPage';
@@ -13,7 +14,10 @@ import AITutorPage from './components/AITutorPage';
 import GroupStudyPage from './components/GroupStudyPage';
 import NotesPage from './components/NotesPage';
 import ProfilePage from './components/ProfilePage';
+import GamificationPage from './components/GamificationPage';
+import AIRecommendationsPage from './components/AIRecommendationsPage';
 import Chatbot from './components/Chatbot';
+import { I18nProvider } from './i18n';
 import './App.css';
 
 const Dashboard = React.lazy(() => import('./components/Dashboard'));
@@ -86,6 +90,7 @@ function AppContent() {
         <Navbar onReset={resetApp} onToggleTheme={toggleTheme} theme={state.theme} />
       )}
       <main className="main-content">
+        <PageMotivation />
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
           <Route
@@ -167,6 +172,14 @@ function AppContent() {
             path="/profile"
             element={<ProfilePage />}
           />
+          <Route
+            path="/gamification"
+            element={<GamificationPage />}
+          />
+          <Route
+            path="/ai-recommendations"
+            element={<AIRecommendationsPage />}
+          />
         </Routes>
         </Suspense>
       </main>
@@ -177,9 +190,11 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <I18nProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </I18nProvider>
   );
 }
 

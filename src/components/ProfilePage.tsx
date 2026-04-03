@@ -103,10 +103,10 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+      <div className="max-w-3xl mx-auto p-4">
         {/* Profile Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6" style={{ border: '1px solid var(--border-light)' }}>
           <div className="flex items-center space-x-6">
             <div className="relative">
               <img
@@ -230,34 +230,43 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* Posts Feed */}
-        <div className="space-y-6">
-          {posts.map((post) => (
-            <div key={post.id} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <img
-                  src={profile.profilePic || 'https://via.placeholder.com/40/CCCCCC/FFFFFF?text=P'}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <h3 className="font-semibold">{profile.username || 'Student'}</h3>
-                  <p className="text-sm text-gray-500">{new Date(post.timestamp).toLocaleString()}</p>
-                </div>
-                <button
-                  onClick={() => deletePost(post.id)}
-                  className="ml-auto text-red-500"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              {post.type === 'photo' ? (
-                <img src={post.content} alt="Post" className="w-full rounded-lg" />
-              ) : (
-                <video src={post.content} controls className="w-full rounded-lg" />
-              )}
-              <p className="mt-2">{post.caption}</p>
+        <div className="space-y-4">
+          {posts.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm p-6 text-center" style={{ border: '1px solid var(--border-light)' }}>
+              <p className="text-gray-600">No posts yet. Upload your first photo or video to start sharing.</p>
             </div>
-          ))}
+          ) : (
+            posts.map((post) => (
+              <div key={post.id} className="bg-white rounded-lg shadow-sm p-4" style={{ border: '1px solid var(--border-light)' }}>
+                <div className="flex items-center space-x-3 mb-3">
+                  <img
+                    src={profile.profilePic || 'https://via.placeholder.com/40/CCCCCC/FFFFFF?text=P'}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div>
+                    <h3 className="font-semibold">{profile.username || 'Student'}</h3>
+                    <p className="text-xs text-gray-500">{new Date(post.timestamp).toLocaleString()}</p>
+                  </div>
+                  <button
+                    onClick={() => deletePost(post.id)}
+                    className="ml-auto text-red-500"
+                    style={{ border: 'none', background: 'transparent' }}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                <div className="mb-3" style={{ maxHeight: '400px', overflow: 'hidden', display: 'flex', justifyContent: 'center' }}>
+                  {post.type === 'photo' ? (
+                    <img src={post.content} alt="Post" className="max-w-full max-h-full rounded-lg object-contain" />
+                  ) : (
+                    <video src={post.content} controls className="max-w-full max-h-full rounded-lg" />
+                  )}
+                </div>
+                <p className="text-gray-700">{post.caption}</p>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

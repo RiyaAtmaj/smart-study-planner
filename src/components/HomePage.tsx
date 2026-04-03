@@ -1,64 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText, User } from 'lucide-react';
+import { BookOpen, Library, ArrowRight, Star, Users, Award, FileText, User, Trophy, Brain } from 'lucide-react';
+import { useI18n } from '../i18n';
 
 const HomePage: React.FC = () => {
-  const [profile, setProfile] = React.useState({
-    username: 'Student',
-    bio: 'Add your bio and profile picture from Profile page',
-    profilePic: 'https://via.placeholder.com/80/CCCCCC/FFFFFF?text=P',
-  });
-
-  React.useEffect(() => {
-    const savedProfile = localStorage.getItem('studyai-profile');
-    if (savedProfile) {
-      const parsed = JSON.parse(savedProfile);
-      setProfile((prev) => ({ ...prev, ...parsed }));
-    }
-  }, []);
-
+  const { t } = useI18n();
   const features = [
     {
       icon: <BookOpen size={32} />,
-      title: 'Smart Study Planner',
+      title: t('feature.study_planner'),
       description: 'AI-powered study plans tailored to your schedule and learning style',
       link: '/subjects',
       color: 'var(--primary-blue)'
     },
     {
       icon: <Library size={32} />,
-      title: 'Free Educational Resources',
+      title: t('feature.resources'),
       description: 'Access quality CBSE learning materials for all subjects and classes',
       link: '/resources',
       color: 'var(--accent-green)'
     },
     {
       icon: <Users size={32} />,
-      title: 'Group Study Section',
+      title: t('feature.groups'),
       description: 'Join and create study groups, collaborate with friends, and track team progress',
       link: '/group-study',
       color: 'var(--accent-purple)'
     },
     {
       icon: <Star size={32} />,
-      title: 'AI Tutor Section',
+      title: t('feature.ai_tutor'),
       description: 'Ask the AI tutor questions, get explanations, and generate notes instantly',
       link: '/ai-tutor',
       color: 'var(--accent-orange)'
     },
     {
       icon: <FileText size={32} />,
-      title: 'Notes Section',
+      title: t('feature.notes'),
       description: 'Create and manage your notes with rich text editing and syntax highlighting.',
       link: '/notes',
       color: 'var(--accent-blue)'
     },
     {
       icon: <User size={32} />,
-      title: 'Upload Resources',
-      description: 'Share your study resources like documents, images or links with peers.',
-      link: '/resources',
+      title: t('feature.profile'),
+      description: 'Customize your profile, upload photos and videos, and share your study journey.',
+      link: '/profile',
       color: 'var(--accent-pink)'
+    },
+    {
+      icon: <Trophy size={32} />,
+      title: t('feature.achievements'),
+      description: 'Earn points, unlock badges, and maintain study streaks for motivation.',
+      link: '/gamification',
+      color: 'var(--accent-yellow)'
+    },
+    {
+      icon: <Brain size={32} />,
+      title: t('feature.ai_recommendations'),
+      description: 'Get personalized study insights and optimal learning strategies based on your patterns.',
+      link: '/ai-recommendations',
+      color: 'var(--accent-cyan)'
     }
   ];
 
@@ -73,27 +75,6 @@ const HomePage: React.FC = () => {
     <div className="page-container">
       {/* Layout: top-left profile summary + hero */}
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', marginBottom: '2rem' }}>
-        <div style={{ minWidth: '250px', position: 'sticky', top: '1rem', alignSelf: 'flex-start' }}>
-          <div className="subject-card" style={{ padding: '1rem', textAlign: 'left' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <img
-                src={profile.profilePic || 'https://via.placeholder.com/80/CCCCCC/FFFFFF?text=P'}
-                alt="Profile"
-                style={{ width: 56, height: 56, borderRadius: '999px', objectFit: 'cover' }}
-              />
-              <div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>{profile.username || 'Student'}</h3>
-                <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{profile.bio || 'No bio yet'}</p>
-              </div>
-            </div>
-            <Link to="/profile" style={{ textDecoration: 'none' }}>
-              <button className="reset-btn" style={{ width: '100%', marginTop: '1rem' }}>
-                Edit Profile
-              </button>
-            </Link>
-          </div>
-        </div>
-
         <div style={{ flex: 1 }}>
           {/* Hero Section */}
           <div style={{
@@ -108,7 +89,7 @@ const HomePage: React.FC = () => {
           marginBottom: '1rem',
           letterSpacing: '-0.025em'
         }}>
-          🎓 Welcome to StudyAI Planner
+          🎓 {t('home.welcome')}
         </h1>
         <p style={{
           fontSize: '1.25rem',
@@ -117,7 +98,7 @@ const HomePage: React.FC = () => {
           margin: '0 auto',
           lineHeight: '1.6'
         }}>
-          Your intelligent companion for academic success. Create personalized study plans
+          {t('home.subtitle')}. Create personalized study plans
           and access free educational resources for CBSE syllabus.
         </p>
       </div>
