@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { GoogleGenAI } from '@google/genai';
 
 const tutorModes = [
   {
@@ -38,9 +39,9 @@ const AITutorPage: React.FC = () => {
   const [activeTutor, setActiveTutor] = React.useState<typeof tutorModes[number] | null>(null);
   const [chatMessages, setChatMessages] = React.useState<Array<{ role: 'system' | 'user' | 'assistant'; content: string }>>([]);
   const [userInput, setUserInput] = React.useState('');
-  const [geminiApiKeyInput, setGeminiApiKeyInput] = React.useState(localStorage.getItem('geminiApiKey') || '');
-  const [geminiApiKey, setGeminiApiKey] = React.useState(localStorage.getItem('geminiApiKey') || '');
-  const [apiStatus, setApiStatus] = React.useState('');
+  const [client, setClient] = React.useState<GoogleGenAI | null>(null);
+  const [lastInteractionId, setLastInteractionId] = React.useState<string | null>(null);
+  const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   const generateMockResponse = (modeId: string, userMessage: string) => {
     if (modeId === 'doubt-solver') {
@@ -58,48 +59,46 @@ const AITutorPage: React.FC = () => {
     return 'I\'m ready to help!';
   };
 
-  const generateResponse = async (modeId: string, userMessage: string, systemPrompt: string, apiKey: string) => {
-    if (!apiKey?.trim()) {
+  const generateResponse = async (modeId: string, userMessage: string, systemPrompt: string) => {
+    if (!geminiApiKey?.trim()) {
       return generateMockResponse(modeId, userMessage);
     }
 
-    const endpoint = `https://generativeai.googleapis.com/v1beta2/models/gemini-1.5-flash:generate?key=${encodeURIComponent(apiKey.trim())}`;
-    const promptText = `${systemPrompt}\n\nUser: ${userMessage}`;
-    const requestBody = {
-      prompt: { text: promptText },
-      temperature: 0.2,
-      maxOutputTokens: 512,
-    };
+    if (!client) {
+      const newClient = new GoogleGenAI({ apiKey: geminiApiKey.trim() });
+      setClient(newClient);
+    }
+
+    const currentClient = client || new GoogleGenAI({ apiKey: geminiApiKey.trim() });
 
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
+      const input = `${systemPrompt}\n\nUser: ${userMessage}`;
+      const interactionParams: any = {
+        model: 'gemini-3-flash-preview',
+        input: input
+      };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error('Gemini API error:', data);
-        return `Gemini API error: ${data.error?.message || response.statusText}`;
+      if (lastInteractionId) {
+        interactionParams.previous_interaction_id = lastInteractionId;
       }
 
-      const candidate = data.candidates?.[0];
-      const outputText =
-        candidate?.content?.find((c: any) => c.type === 'output_text')?.text ||
-        candidate?.content?.[0]?.text ||
-        data.output?.[0]?.content?.find((c: any) => c.type === 'output_text')?.text ||
-        data.output?.[0]?.content?.[0]?.text ||
-        '';
-
-      if (!outputText) {
-        return 'Gemini responded but no text could be extracted. Check the model output format.';
+      const interaction = await currentClient.interactions.create(interactionParams);
+      
+      if (!interaction.outputs || interaction.outputs.length === 0) {
+        return 'No response received from the model.';
       }
-      return outputText;
+      
+      const lastOutput = interaction.outputs[interaction.outputs.length - 1];
+      if ('text' in lastOutput) {
+        const responseText = lastOutput.text;
+        setLastInteractionId(interaction.id);
+        return responseText;
+      } else {
+        return 'Response received but not in text format.';
+      }
     } catch (error) {
-      console.error('Gemini request failed:', error);
-      return 'Sorry, there was an error connecting to Gemini. Please verify your API key and network connectivity.';
+      console.error('GoogleGenAI request failed:', error);
+      return 'Sorry, there was an error connecting to GoogleGenAI. Please verify your API key and network connectivity.';
     }
   };
 
@@ -110,6 +109,7 @@ const AITutorPage: React.FC = () => {
       { role: 'assistant', content: `You switched to ${mode.title}. ${mode.description}` }
     ]);
     setUserInput('');
+    setLastInteractionId(null); // Reset conversation for new tutor mode
   };
 
   const handleSend = async (e: React.FormEvent) => {
@@ -120,7 +120,7 @@ const AITutorPage: React.FC = () => {
     setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setUserInput('');
 
-    const response = await generateResponse(activeTutor.id, userMessage, activeTutor.systemPrompt, geminiApiKey);
+    const response = await generateResponse(activeTutor.id, userMessage, activeTutor.systemPrompt);
     setChatMessages(prev => [...prev, { role: 'assistant', content: response }]);
   };
 
@@ -134,33 +134,7 @@ const AITutorPage: React.FC = () => {
       </button>
 
       <h2 style={{ marginBottom: '0.75rem' }}>AI Tutor Section</h2>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Select an AI tutoring mode and start a chat. Use a Gemini API key for live results, or fallback to offline mock responses.</p>
-
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--text-primary)' }}>Google Gemini API Key:</label>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <input
-            type="password"
-            value={geminiApiKeyInput}
-            onChange={(e) => setGeminiApiKeyInput(e.target.value)}
-            placeholder="Enter your Gemini API key"
-            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-          />
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-              setGeminiApiKey(geminiApiKeyInput.trim());
-              localStorage.setItem('geminiApiKey', geminiApiKeyInput.trim());
-              setApiStatus(geminiApiKeyInput.trim() ? 'API key saved successfully.' : 'API key cleared.');
-            }}
-            style={{ padding: '0.55rem 0.8rem', marginTop: 0 }}
-          >
-            Save API
-          </button>
-        </div>
-        {apiStatus && <p style={{ fontSize: '0.85rem', marginTop: '0.4rem', color: 'var(--accent-green)' }}>{apiStatus}</p>}
-      </div>
+      <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Select an AI tutoring mode and start a chat.</p>
 
       <div className="tutor-grid" style={{ marginBottom: '1rem' }}>
         {tutorModes.map((mode) => (

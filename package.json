@@ -12,6 +12,7 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix"
   },
   "dependencies": {
+    "@google/genai": "^1.50.1",
     "@google/generative-ai": "^0.24.1",
     "@tiptap/extension-bold": "^3.22.1",
     "@tiptap/extension-bullet-list": "^3.22.1",
